@@ -1,42 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Zoho HS256 JWT IdP</title>
-  <script src="https://cdn.jsdelivr.net/npm/jose@4.14.4/dist/browser/index.min.js"></script>
-  <style>
-    body { font-family: sans-serif; padding: 2rem; max-width: 600px; margin: auto; }
-    input, button { margin: 0.5rem 0; padding: 0.5rem; width: 100%; }
-  </style>
+  <title>Fake SAML IdP</title>
 </head>
 <body>
-  <h1>Zoho JWT Login</h1>
-  <form id="jwtForm">
-    <input type="email" id="email" placeholder="Enter your email" required />
+  <h2>Fake SAML Login</h2>
+  <form id="loginForm">
+    <label>Email: <input type="email" id="email" required /></label><br><br>
     <button type="submit">Login</button>
   </form>
-  <pre id="output"></pre>
 
-  <script type="module">
-    import { SignJWT } from "https://cdn.jsdelivr.net/npm/jose@4.14.4/+esm";
-
-    const SHARED_SECRET = new TextEncoder().encode("psd==C7PgW8Dcv31VCsg2AgccALsPMx6TSvnXTqZULuTURWdMs");
-
-    document.getElementById("jwtForm").onsubmit = async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-
-      const jwt = await new SignJWT({ email })
-        .setProtectedHeader({ alg: "HS256" })
-        .setIssuedAt()
-        .setExpirationTime("5m")
-        .sign(SHARED_SECRET);
-
-      const redirect = `https://accounts.zoho.com/jwtlogin?token=${jwt}`;
-
-      document.getElementById("output").textContent = `JWT created:\n${jwt}\n\nRedirecting to Zoho...`;
-      window.location.href = redirect;
-    };
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/jsrsasign"></script>
+  <script src="saml.js"></script>
 </body>
 </html>
