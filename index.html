@@ -1,48 +1,42 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>JWT Demo IdP</title>
-    <script src="https://cdn.jsdelivr.net/npm/jose@4.14.4/dist/browser/index.min.js"></script>
-    <style>
-      body { font-family: sans-serif; padding: 2em; }
-      input, button { padding: 0.5em; margin: 0.5em 0; }
-    </style>
-  </head>
-  <body>
-    <h1>JWT Demo Identity Provider</h1>
-    <form id="login-form">
-      <label>
-        Username:
-        <input type="text" id="username" required />
-      </label><br/>
-      <label>
-        Password:
-        <input type="password" id="password" required />
-      </label><br/>
-      <button type="submit">Login</button>
-    </form>
-    <pre id="output"></pre>
+<head>
+  <meta charset="UTF-8">
+  <title>Zoho HS256 JWT IdP</title>
+  <script src="https://cdn.jsdelivr.net/npm/jose@4.14.4/dist/browser/index.min.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; max-width: 600px; margin: auto; }
+    input, button { margin: 0.5rem 0; padding: 0.5rem; width: 100%; }
+  </style>
+</head>
+<body>
+  <h1>Zoho JWT Login</h1>
+  <form id="jwtForm">
+    <input type="email" id="email" placeholder="Enter your email" required />
+    <button type="submit">Login</button>
+  </form>
+  <pre id="output"></pre>
 
-    <script type="module">
-      import { SignJWT } from "https://cdn.jsdelivr.net/npm/jose@4.14.4/dist/browser/index.min.js";
+  <script type="module">
+    import { SignJWT } from "https://cdn.jsdelivr.net/npm/jose@4.14.4/+esm";
 
-      const secret = new TextEncoder().encode("psd==C7PgW8Dcv31VCsg2AgccALsPMx6TSvnXTqZULuTURWdMs"); // NEVER use in prod
+    const SHARED_SECRET = new TextEncoder().encode("psd==C7PgW8Dcv31VCsg2AgccALsPMx6TSvnXTqZULuTURWdMs");
 
-      document.getElementById("login-form").onsubmit = async (e) => {
-        e.preventDefault();
-        const username = document.getElementById("username").value;
+    document.getElementById("jwtForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
 
-        const jwt = await new SignJWT({ sub: username, role: "admin" })
-          .setProtectedHeader({ alg: "HS256" })
-          .setIssuedAt()
-          .setExpirationTime("1h")
-          .sign(secret);
+      const jwt = await new SignJWT({ email })
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        .setExpirationTime("5m")
+        .sign(SHARED_SECRET);
 
-        document.getElementById("output").textContent = `JWT:\n${jwt}`;
+      const redirect = `https://accounts.zoho.com/jwtlogin?token=${jwt}`;
 
-        // optionally redirect to a callback URL
-        // window.location.href = `https://your-app.com/callback?token=${jwt}`;
-      };
-    </script>
-  </body>
+      document.getElementById("output").textContent = `JWT created:\n${jwt}\n\nRedirecting to Zoho...`;
+      window.location.href = redirect;
+    };
+  </script>
+</body>
 </html>
