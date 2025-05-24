@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JWT Demo IdP</title>
+    <script src="https://cdn.jsdelivr.net/npm/jose@4.14.4/dist/browser/index.min.js"></script>
+    <style>
+      body { font-family: sans-serif; padding: 2em; }
+      input, button { padding: 0.5em; margin: 0.5em 0; }
+    </style>
+  </head>
+  <body>
+    <h1>JWT Demo Identity Provider</h1>
+    <form id="login-form">
+      <label>
+        Username:
+        <input type="text" id="username" required />
+      </label><br/>
+      <label>
+        Password:
+        <input type="password" id="password" required />
+      </label><br/>
+      <button type="submit">Login</button>
+    </form>
+    <pre id="output"></pre>
+
+    <script type="module">
+      import { SignJWT } from "https://cdn.jsdelivr.net/npm/jose@4.14.4/dist/browser/index.min.js";
+
+      const secret = new TextEncoder().encode("demo-super-secret"); // NEVER use in prod
+
+      document.getElementById("login-form").onsubmit = async (e) => {
+        e.preventDefault();
+        const username = document.getElementById("username").value;
+
+        const jwt = await new SignJWT({ sub: username, role: "admin" })
+          .setProtectedHeader({ alg: "HS256" })
+          .setIssuedAt()
+          .setExpirationTime("1h")
+          .sign(secret);
+
+        document.getElementById("output").textContent = `JWT:\n${jwt}`;
+
+        // optionally redirect to a callback URL
+        // window.location.href = `https://your-app.com/callback?token=${jwt}`;
+      };
+    </script>
+  </body>
+</html>
