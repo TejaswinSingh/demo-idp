@@ -7,17 +7,18 @@
 <body>
   <h2>Zoho SAML IdP</h2>
 
-  <form id="samlForm" method="POST" action="https://accounts.zoho.in/signin/samlsp/60041230659">
+  <form id="emailInputForm">
+    <label for="email">Email:</label>
+    <input type="email" id="email" required>
+    <button type="submit">Generate SAML</button>
+  </form>
+
+  <form id="samlForm" method="POST" action="https://accounts.zoho.in/signin/samlsp/60041230659" style="display:none;">
     <input type="hidden" name="SAMLResponse" id="SAMLResponse">
     <input type="submit" value="Login to Zoho">
   </form>
 
   <script>
-    const nameID = "resolyte.official@gmail.com";
-    const now = new Date();
-    const fiveMinLater = new Date(now.getTime() + 5 * 60000).toISOString();
-    const nowISO = now.toISOString();
-
     const cert = `MIIDHDCCAgSgAwIBAgIRAITwhNQdtaYWOkwMvG0hVEcwDQYJKoZIhvcNAQELBQAw
 EjEQMA4GA1UEChMHQWNtZSBDbzAeFw0yNTA1MjYxMDA3MTBaFw0yNjA1MjYxMDA3
 MTBaMBIxEDAOBgNVBAoTB0FjbWUgQ28wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
@@ -36,7 +37,14 @@ W5Mz82Hm+3xhIrBTDfHvA00Zs/4l8bp95wZSfq5vDJBcSyovXPqM31GSJJpapcJS
 sATCLCRrnDbQMmbpxu+7ZnHVkwzez619DvrPr1bBjDimhJBxAZPNPt6WjnUJBxz3
 ePzDWKZXVEvGkFr6DBeftJ5QnRscZqNkkkgElUFs5Nw=`;
 
-    const saml = `
+    document.getElementById('emailInputForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nameID = document.getElementById('email').value;
+      const now = new Date();
+      const fiveMinLater = new Date(now.getTime() + 5 * 60000).toISOString();
+      const nowISO = now.toISOString();
+
+      const saml = `
 <samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
                 ID="_resp123" Version="2.0" IssueInstant="${nowISO}"
                 Destination="https://accounts.zoho.in/signin/samlsp/60041230659"
@@ -86,13 +94,13 @@ ePzDWKZXVEvGkFr6DBeftJ5QnRscZqNkkkgElUFs5Nw=`;
       </saml:AuthnContext>
     </saml:AuthnStatement>
   </saml:Assertion>
-</samlp:Response>
-`.trim();
+</samlp:Response>`.trim();
 
-    const b64SAML = btoa(unescape(encodeURIComponent(saml)));
-    document.getElementById('SAMLResponse').value = b64SAML;
+      const b64SAML = btoa(unescape(encodeURIComponent(saml)));
+      document.getElementById('SAMLResponse').value = b64SAML;
 
-    // document.getElementById('samlForm').submit(); // Uncomment for auto-login testing
+      document.getElementById('samlForm').style.display = 'block';
+    });
   </script>
 </body>
 </html>
