@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Live Bus Camera Footage</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: white;
+      font-family: sans-serif;
+    }
+    .header {
+      background-color: #c62828;
+      padding: 10px;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    .video-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 50px);
+    }
+    video {
+      width: 100%;
+      max-width: 800px;
+      height: auto;
+      border: 2px solid #333;
+      background-color: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Live Feed: School Bus Security Cam</div>
+  <div class="video-container">
+    <video controls autoplay muted>
+      <source src="footage.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</body>
+</html>
