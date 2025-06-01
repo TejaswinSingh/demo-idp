@@ -1,16 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Fake SAML IdP</title>
+  <meta charset="UTF-8">
+  <title>Zoho SAML IdP</title>
 </head>
 <body>
-  <h2>Fake SAML Login</h2>
-  <form id="loginForm">
-    <label>Email: <input type="email" id="email" required /></label><br><br>
-    <button type="submit">Login</button>
+  <h2>Zoho SAML IdP</h2>
+
+  <form id="samlForm" method="POST" action="https://creator.zoho.com/saml/acs">
+    <input type="hidden" name="SAMLResponse" id="SAMLResponse">
+    <input type="submit" value="Login to Zoho">
   </form>
 
-  <script src="https://cdn.jsdelivr.net/npm/jsrsasign"></script>
-  <script src="saml.js"></script>
+  <script>
+    const nameID = "resolyte.official@gmail.com";
+    const now = new Date();
+    const fiveMinLater = new Date(now.getTime() + 5 * 60000).toISOString();
+    const nowISO = now.toISOString();
+
+    const cert = `MIIDHDCCAgSgAwIBAgIRAITwhNQdtaYWOkwMvG0hVEcwDQYJKoZIhvcNAQELBQAw
+EjEQMA4GA1UEChMHQWNtZSBDbzAeFw0yNTA1MjYxMDA3MTBaFw0yNjA1MjYxMDA3
+MTBaMBIxEDAOBgNVBAoTB0FjbWUgQ28wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
+ggEKAoIBAQCZ8sl8kwx5fVIRb1OBL93CQFGuVC7bHIU1GOPRCn0EXnyy++LuT8MR
+njECP9gXQkEgjrg1SFyRzTcyjSWnwDbhGNEtsHF1DQO1K6prG+y2DdvliqrJ0wYh
+kDS6RbRwzeWyvB3XLlNTBZBsFMJdkw4VyErn2pMALB3j7cR8ZO6GwI2bXHivbZ/w
+ES2CgqoRwttpNWDpYkHyHsZBkCg/kgO0SE/NUVXg7NUiEWLiqtf8MxiL7xmox7pa
+dI05GwtXwb2DQq71BdZJVLLXkFoGshD6MF/mLSisEDQLnINi18lSCq9VbY8FuQos
+xJov/BnhGJd4s6T9X3y5YLjrD3sPCftJAgMBAAGjbTBrMA4GA1UdDwEB/wQEAwIC
+pDATBgNVHSUEDDAKBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQW
+BBRemV9Tsapk9cQnsGeKCD5OejQexDAUBgNVHREEDTALgglsb2NhbGhvc3QwDQYJ
+KoZIhvcNAQELBQADggEBAFnInOkWGcNMzm2PHEB/JV4s1EwltRZCd9dJmb80pnBV
+nHK7zE9W9KrGDBweQrn0Z71hxBbyCO+CkotzBPW+KToT3+Af526M2TzP8vEZGwDG
+Y4X+WlIw1KGwiqxqOFSsD5Ikfgwcmlrm7Lkj9ANySmljQefyc5bCZHBuSDCmrYBa
+W5Mz82Hm+3xhIrBTDfHvA00Zs/4l8bp95wZSfq5vDJBcSyovXPqM31GSJJpapcJS
+sATCLCRrnDbQMmbpxu+7ZnHVkwzez619DvrPr1bBjDimhJBxAZPNPt6WjnUJBxz3
+ePzDWKZXVEvGkFr6DBeftJ5QnRscZqNkkkgElUFs5Nw=`;
+
+    const saml = `
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+                ID="_resp123" Version="2.0" IssueInstant="${nowISO}"
+                Destination="https://accounts.zoho.in/signin/samlsp/60041230659"
+                xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">
+  <saml:Issuer>https://tejaswinsingh.github.io/demo-idp/</saml:Issuer>
+  <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    <ds:SignedInfo>
+      <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+      <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256"/>
+      <ds:Reference URI="#_assertion123">
+        <ds:Transforms>
+          <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+        </ds:Transforms>
+        <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256"/>
+        <ds:DigestValue>DUMMYDIGEST==</ds:DigestValue>
+      </ds:Reference>
+    </ds:SignedInfo>
+    <ds:SignatureValue>DUMMYSIGNATURE==</ds:SignatureValue>
+    <ds:KeyInfo>
+      <ds:X509Data>
+        <ds:X509Certificate>${cert.replace(/\n/g, '')}</ds:X509Certificate>
+      </ds:X509Data>
+    </ds:KeyInfo>
+  </ds:Signature>
+  <samlp:Status>
+    <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
+  </samlp:Status>
+  <saml:Assertion ID="_assertion123" IssueInstant="${nowISO}" Version="2.0">
+    <saml:Issuer>https://tejaswinsingh.github.io/demo-idp/</saml:Issuer>
+    <saml:Subject>
+      <saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">${nameID}</saml:NameID>
+      <saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+        <saml:SubjectConfirmationData NotOnOrAfter="${fiveMinLater}"
+                                      Recipient="https://creator.zoho.com/saml/acs"/>
+      </saml:SubjectConfirmation>
+    </saml:Subject>
+    <saml:Conditions NotBefore="${nowISO}" NotOnOrAfter="${fiveMinLater}">
+      <saml:AudienceRestriction>
+        <saml:Audience>https://accounts.zoho.in</saml:Audience>
+      </saml:AudienceRestriction>
+    </saml:Conditions>
+    <saml:AuthnStatement AuthnInstant="${nowISO}">
+      <saml:AuthnContext>
+        <saml:AuthnContextClassRef>
+          urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
+        </saml:AuthnContextClassRef>
+      </saml:AuthnContext>
+    </saml:AuthnStatement>
+  </saml:Assertion>
+</samlp:Response>
+`.trim();
+
+    const b64SAML = btoa(unescape(encodeURIComponent(saml)));
+    document.getElementById('SAMLResponse').value = b64SAML;
+
+    // document.getElementById('samlForm').submit(); // Uncomment for auto-login testing
+  </script>
 </body>
 </html>
