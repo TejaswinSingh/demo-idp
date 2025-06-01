@@ -7,7 +7,7 @@
 <body>
   <h2>Zoho SAML IdP</h2>
 
-  <form id="samlForm" method="POST" action="https://creator.zoho.com/saml/acs">
+  <form id="samlForm" method="POST" action="https://accounts.zoho.in/signin/samlsp/60041230659">
     <input type="hidden" name="SAMLResponse" id="SAMLResponse">
     <input type="submit" value="Login to Zoho">
   </form>
@@ -70,7 +70,7 @@ ePzDWKZXVEvGkFr6DBeftJ5QnRscZqNkkkgElUFs5Nw=`;
       <saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">${nameID}</saml:NameID>
       <saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
         <saml:SubjectConfirmationData NotOnOrAfter="${fiveMinLater}"
-                                      Recipient="https://creator.zoho.com/saml/acs"/>
+                                      Recipient="https://accounts.zoho.in/signin/samlsp/60041230659"/>
       </saml:SubjectConfirmation>
     </saml:Subject>
     <saml:Conditions NotBefore="${nowISO}" NotOnOrAfter="${fiveMinLater}">
